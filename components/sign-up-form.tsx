@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
 
 export function SignUpForm({
   className,
@@ -70,7 +69,7 @@ export function SignUpForm({
         }
       }
 
-      router.push("/auth/sign-up-success");
+      router.push("/auth/login");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

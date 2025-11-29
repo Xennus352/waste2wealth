@@ -90,12 +90,7 @@ const PostCardContainer = ({
             ? safePosts.filter((post) => post.profiles?.id === userId)
             : safePosts;
 
-        // Show message if userId is not empty but no posts
-        if (userId !== "" && filteredPosts.length === 0) {
-          return (
-            <p className="text-center text-gray-500 py-10">No posts yet</p>
-          );
-        }
+       
 
         // Render posts
         return filteredPosts.map((post) => (
