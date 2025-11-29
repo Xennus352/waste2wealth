@@ -1,12 +1,9 @@
 "use client";
 
-import { PostCard } from "@/components/pages/PostCard";
 import PostCardContainer from "@/components/pages/PostCardContainer";
 import { PostCreator } from "@/components/pages/PostCreator";
 
-
 export default function Home() {
-  
   return (
     <div className="min-h-screen bg-eco-background p-4 sm:p-6">
       <div className="space-y-6">

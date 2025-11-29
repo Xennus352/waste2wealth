@@ -41,6 +41,7 @@ export function SignUpForm({
     }
 
     try {
+      // Sign up user
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -48,13 +49,30 @@ export function SignUpForm({
           emailRedirectTo: `${window.location.origin}/protected`,
         },
       });
+
       if (error) throw error;
+
       if (data.user) {
-        await axios.post("/api/ensure-profile", { user: data.user });
+        // Ensure profile with correct payload
+        const res = await fetch("/api/ensure-profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: data.user.id,
+            display_name: data.user.email?.split("@")[0] || "",
+            phone: "",
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err?.error || "Failed to create profile");
+        }
       }
+
       router.push("/auth/sign-up-success");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }

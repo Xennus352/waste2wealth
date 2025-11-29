@@ -29,8 +29,11 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
-    return NextResponse.json({ error: "Failed to create profile" }, { status: 500 });
+    return NextResponse.json(
+      { error: err?.message || "Failed to create profile" },
+      { status: 500 }
+    );
   }
 }
