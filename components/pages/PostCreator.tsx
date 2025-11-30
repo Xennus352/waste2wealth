@@ -5,16 +5,17 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 
-export const PostCreator = () => {
+type PostCreatorProps = {
+  onPostCreated?: () => void;
+};
+export const PostCreator = ({ onPostCreated }: PostCreatorProps) => {
   const user = useAuth();
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const MAX_IMAGES = 2;
 
@@ -82,11 +83,11 @@ export const PostCreator = () => {
       });
 
       toast.success("Post created!");
-      router.refresh();
       setText("");
       setTags([]);
       setMediaFiles([]);
       setMediaPreviews([]);
+      if (onPostCreated) onPostCreated();
     } catch (err) {
       console.error("Failed to create post:", err);
       toast.error("Failed to create post");

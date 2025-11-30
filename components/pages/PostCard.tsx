@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Heart, MessageCircle, Share2 } from "lucide-react";
+import { Heart, MessageCircle, Trash } from "lucide-react";
 import { Like, PostData } from "@/types";
 import Stack from "./Stack";
 import { TimeFormatter } from "@/utils/timeFormatter";
@@ -12,8 +12,17 @@ import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { createClient } from "@/lib/supabase/client";
+import toast from "react-hot-toast";
+import { CommentDialog } from "./CommentDialog";
+import ShareButton from "./ShareButton";
 
-export function PostCard({ post }: { post?: PostData }) {
+export function PostCard({
+  post,
+  onDelete,
+}: {
+  post?: PostData;
+  onDelete: (id: string) => void;
+}) {
   const user = useAuth();
   const [likesCount, setLikesCount] = useState(post?.likes_count || 0);
   const [isLiked, setIsLiked] = useState(
@@ -49,10 +58,10 @@ export function PostCard({ post }: { post?: PostData }) {
         },
         (payload) => {
           setLikesCount((prev) => {
-          if (payload.eventType === "INSERT") return prev + 1;
-          if (payload.eventType === "DELETE") return Math.max(prev - 1, 0);
-          return prev; // ignore UPDATE
-        });
+            if (payload.eventType === "INSERT") return prev + 1;
+            if (payload.eventType === "DELETE") return Math.max(prev - 1, 0);
+            return prev; // ignore UPDATE
+          });
         }
       )
       .subscribe();
@@ -93,6 +102,20 @@ export function PostCard({ post }: { post?: PostData }) {
     );
   }
 
+  // delete post
+  const handleDelete = async (post_id: string) => {
+    try {
+      const res = await axios.post("/api/delete-post", { post_id });
+
+      if (res.data.success) {
+        onDelete(post.id);
+        toast.success("Post deleted!");
+      }
+    } catch (err) {
+      toast.error("Failed to delete post");
+    }
+  };
+
   return (
     <Card className="max-w-4xl mx-auto mb-6 shadow-md border-eco-primary-soft p-4">
       <div className="flex flex-col md:flex-row gap-4">
@@ -130,14 +153,21 @@ export function PostCard({ post }: { post?: PostData }) {
                   )}
                 </AvatarFallback>
               </Avatar>
-
-              <div>
-                <p className="font-semibold text-eco-text-dark">
-                  {post ? post.profiles?.display_name : "Unknown"}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {TimeFormatter(post.updated_at)}
-                </p>
+              <div className="flex justify-between w-full">
+                <div>
+                  <p className="font-semibold text-eco-text-dark">
+                    {post ? post.profiles?.display_name : "Unknown"}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {TimeFormatter(post.updated_at)}
+                  </p>
+                </div>
+                <div
+                  onClick={() => handleDelete(post.id)}
+                  className=" cursor-pointer hover:text-red-600"
+                >
+                  {post?.user_id === user?.id && <Trash />}
+                </div>
               </div>
             </div>
 
@@ -177,13 +207,13 @@ export function PostCard({ post }: { post?: PostData }) {
                   <MessageCircle className="h-4 w-4" />{" "}
                   {post.comments_count || 0}
                 </span>
-             
               </div>
             </div>
 
             <Separator className="bg-eco-primary-soft my-2" />
 
             <div className="flex justify-between">
+              {/* like button  */}
               <Button
                 variant="ghost"
                 onClick={toggleLike}
@@ -193,20 +223,19 @@ export function PostCard({ post }: { post?: PostData }) {
               >
                 <Heart className={`h-5 w-5 mr-2`} /> Like
               </Button>
-
+              {/* comment button  */}
               <Button
                 variant="ghost"
                 className="text-eco-text-dark hover:bg-eco-primary-soft/50"
               >
-                <MessageCircle className="h-5 w-5 mr-2" /> Comment
+                <CommentDialog
+                  postId={post.id}
+                  currentUserId={user?.id as string}
+                />
               </Button>
 
-              <Button
-                variant="ghost"
-                className="text-eco-text-dark hover:bg-eco-primary-soft/50"
-              >
-                <Share2 className="h-5 w-5 mr-2" /> Share
-              </Button>
+              {/* share button  */}
+              <ShareButton post={post} />
             </div>
           </div>
         </div>

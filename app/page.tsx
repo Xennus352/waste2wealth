@@ -2,13 +2,18 @@
 
 import PostCardContainer from "@/components/pages/PostCardContainer";
 import { PostCreator } from "@/components/pages/PostCreator";
+import { useState } from "react";
 
 export default function Home() {
+  const [refreshFeed, setRefreshFeed] = useState<boolean>(false);
+
+    // function to trigger feed refresh
+  const triggerRefresh = () => setRefreshFeed((prev) => !prev);
   return (
     <div className="min-h-screen bg-eco-background p-4 sm:p-6">
       <div className="space-y-6">
         {/* Post Creation Section */}
-        <PostCreator />
+        <PostCreator onPostCreated={triggerRefresh} />
 
         {/* --- Feed Separator --- */}
         <div className="max-w-2xl mx-auto pt-4">
@@ -19,7 +24,7 @@ export default function Home() {
 
         {/* Post Feed Section */}
         <div className="space-y-6 ">
-          <PostCardContainer />
+          <PostCardContainer refreshFeed={refreshFeed} />
         </div>
       </div>
     </div>

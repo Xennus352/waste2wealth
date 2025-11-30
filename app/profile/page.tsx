@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { UserProfile } from "@/types";
 import toast from "react-hot-toast";
 import PostCardContainer from "@/components/pages/PostCardContainer";
+import { LogoutButton } from "@/components/logout-button";
 
 export default function Profile() {
   const [avatar, setAvatar] = useState<string>(
@@ -211,7 +212,10 @@ export default function Profile() {
               />
             </div>
 
-            <div className="md:col-span-3 flex justify-end pt-2">
+            <div className="md:col-span-3 flex justify-end gap-2 pt-2">
+              <div className="rounded-full text-red-600 hover:text-white hover:bg-red-700  transition-all duration-200">
+                <LogoutButton />
+              </div>
               <Button
                 onClick={handleUpdateProfile}
                 className="bg-eco-primary hover:bg-eco-primaryLight text-white rounded-xl px-8"

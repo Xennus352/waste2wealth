@@ -23,6 +23,19 @@ export type Comment = {
   id: string;
   user_id: string;
   content: string;
+  created_at: string;
+};
+
+export type CommentWithUser = {
+  id: string;
+  user_id: string;
+  content: string;
+  created_at: Date;
+  users: {
+    id: string;
+    display_name: string;
+    avatar_url?: string;
+  };
 };
 
 export type Share = {
@@ -36,11 +49,11 @@ export type PostData = {
   description: string;
   tags: string[];
   image_url: string[];
-  created_at: Date;
-  updated_at: Date; 
+  created_at: string;
+  updated_at: string;
   profiles?: UserProfile;
   likes?: Like[];
-  comments?: Comment[];
+  comments?: CommentWithUser[];
   shares?: Share[];
   likes_count?: number;
   comments_count?: number;
