@@ -100,9 +100,15 @@ export const PostCreator = ({ onPostCreated }: PostCreatorProps) => {
     <div className="max-w-4xl mx-auto p-6 rounded-3xl bg-gradient-to-br from-green-50 to-green-100 shadow-2xl">
       <textarea
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value);
+          // Auto-resize
+          const target = e.target;
+          target.style.height = "auto"; // reset height
+          target.style.height = target.scrollHeight + "px"; // set new height
+        }}
         placeholder="Share your eco-project, tip, or upcycling idea..."
-        className="w-full resize-none rounded-2xl p-4 border border-green-300 focus:border-green-500 focus:ring-1 focus:ring-green-300 shadow-sm text-green-900 placeholder-green-700 transition-all min-h-[100px] lg:min-h-[140px]"
+        className="w-full  rounded-2xl p-4 border border-green-300 focus:border-green-500 focus:ring-1 focus:ring-green-300 shadow-sm text-green-900 placeholder-green-700 transition-all min-h-[100px] lg:min-h-[140px]"
       />
 
       <div className="flex flex-wrap gap-2 mt-4">

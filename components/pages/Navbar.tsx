@@ -28,7 +28,9 @@ const Navbar = () => {
             </Link>
           ) : (
             <div className=" md:flex items-center justify-center cursor-pointer  border hover:text-eco-primaryLight p-2 sm:inline-flex rounded-full gap-2">
-              <LogoutButton />
+              <div className="hidden  sm:inline-flex">
+                <LogoutButton />
+              </div>
               <Link href={"/profile"}>
                 <ProfileAvatar />
               </Link>

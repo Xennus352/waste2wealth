@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle, Trash, TrashIcon, X } from "lucide-react";
 import { CommentWithUser } from "@/types";
 import { TimeFormatter } from "@/utils/timeFormatter";
 import { createClient } from "@/lib/supabase/client";
@@ -212,7 +212,7 @@ export const CommentDialog = ({
           className="flex-1 overflow-y-auto mt-4 flex flex-col gap-3 px-1"
         >
           <AnimatePresence initial={false}>
-            {comments.map((c: any) => {
+            {comments?.map((c: any) => {
               const isMine = c.user_id === currentUserId;
               const createdAt = new Date(Date.parse(c.created_at + "Z"));
 
@@ -231,7 +231,7 @@ export const CommentDialog = ({
             }`}
                 >
                   <div className="flex justify-between items-center mb-1 text-sm font-semibold">
-                    <span>{isMine ? "You" : "User"}</span>
+                    <span>{isMine ? "You" : c?.profiles?.display_name}</span>
                     <span className="text-xs indent-11 text-gray-500 dark:text-gray-400">
                       {TimeFormatter(createdAt)}
                     </span>
@@ -243,7 +243,7 @@ export const CommentDialog = ({
                       onClick={() => {
                         handleDeleteComment(c.id);
                       }}
-                      className="absolute top-0 right-2 text-sm text-red-600 hover:text-red-400"
+                      className="absolute top-0 -right-1 text-xs text-red-600 hover:text-red-400"
                       title="Delete comment"
                     >
                       <X />
@@ -256,7 +256,7 @@ export const CommentDialog = ({
         </div>
 
         {/* typing effect  */}
-        <div className="mt-2 min-h-[24px] text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-2 min-h-1 text-sm text-gray-500 dark:text-gray-400">
           {typingUsers.length > 0 && (
             <motion.div
               initial={{ opacity: 0 }}

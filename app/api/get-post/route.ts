@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/client";
-
-const supabase = createClient();
+import { supabaseAdmin } from "@/lib/supabase/server-client";
 
 export async function GET(req: NextRequest) {
   try {
     // Fetch posts with profile info and counts
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("posts")
       .select(
         `

@@ -16,7 +16,7 @@ export function LogoutButton() {
 
   return (
     <Button
-      className="hidden border hover:text-eco-primaryLight p-2 sm:inline-flex rounded-full"
+      className=" border hover:text-eco-primaryLight p-2 sm:inline-flex rounded-full"
       onClick={logout}
     >
       Logout

@@ -13,6 +13,9 @@ import { UserProfile } from "@/types";
 import toast from "react-hot-toast";
 import PostCardContainer from "@/components/pages/PostCardContainer";
 import { LogoutButton } from "@/components/logout-button";
+import CreateProductForm from "@/components/pages/CreateProductForm";
+import OrderNotifications from "@/components/pages/OrderNotifications";
+import MyOrders from "@/components/pages/MyOrders";
 
 export default function Profile() {
   const [avatar, setAvatar] = useState<string>(
@@ -178,6 +181,20 @@ export default function Profile() {
                   {userProfile ? userProfile.display_name : displayName}
                 </h2>
                 <p className="text-sm text-eco-primary">{user && user.email}</p>
+
+                {/* copyable user id  */}
+                <div className="flex items-center gap-2">
+                  <p
+                    className="text-sm text-eco-primary select-text cursor-pointer
+                  hover:text-eco-primaryLight hover:underline transition"
+                    onClick={() => {
+                      if (user?.id) navigator.clipboard.writeText(user?.id);
+                      toast.success("User ID copied to clipboard!");
+                    }}
+                  >
+                    {user?.id}
+                  </p>
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -285,37 +302,10 @@ export default function Profile() {
                         </div>
                       )}
 
-                      {active === "sell" && (
-                        <Card className="rounded-xl p-4">
-                          <CardTitle>Create Product</CardTitle>
-                          <div className="space-y-4 mt-4">
-                            <Input placeholder="Product Name" />
-                            <Input placeholder="Price" />
-                            <Input placeholder="Description" />
-                            <Button className="bg-eco-primary text-white">
-                              Publish Product
-                            </Button>
-                          </div>
-                        </Card>
-                      )}
+                      {active === "sell" && <CreateProductForm />}
 
                       {active === "orders" && (
-                        <div className="space-y-4">
-                          {[1, 2].map((order) => (
-                            <Card
-                              key={order}
-                              className="rounded-xl p-4 flex justify-between"
-                            >
-                              <div>
-                                <p className="font-semibold">Order #{order}</p>
-                                <p>Eco Bag - 2 Qty</p>
-                              </div>
-                              <span className="px-4 py-1 rounded-full bg-eco-primarySoft">
-                                Processing
-                              </span>
-                            </Card>
-                          ))}
-                        </div>
+                        <MyOrders userId={user?.id as string} />
                       )}
                     </div>
                   </div>

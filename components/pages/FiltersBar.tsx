@@ -9,13 +9,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SlidersHorizontal } from "lucide-react";
+import { Coins, SlidersHorizontal } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function FiltersBar({ onFilterChange }: any) {
   const [filters, setFilters] = useState({
     material: "",
     sort: "",
   });
+  const user = useAuth();
 
   const updateFilter = (key: string, value: string) => {
     const updated = { ...filters, [key]: value };
@@ -24,7 +26,7 @@ export default function FiltersBar({ onFilterChange }: any) {
   };
 
   return (
-    <div className="w-full bg-white/20 backdrop-blur-lg shadow-sm border rounded-2xl p-4 mb-6">
+    <div className="w-full flex  items-center gap-3 bg-white/20 backdrop-blur-lg shadow-sm border rounded-2xl p-4 mb-6">
       <div className="flex items-center gap-4 flex-wrap">
         {/* Icon */}
         <div className="flex items-center gap-2 text-gray-700 font-medium">
@@ -53,9 +55,8 @@ export default function FiltersBar({ onFilterChange }: any) {
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent className=" bg-eco-background">
-            <SelectItem value="popular">Most Popular</SelectItem>
-            <SelectItem value="latest">Newest</SelectItem>
-            <SelectItem value="likes">Most Liked</SelectItem>
+            <SelectItem value="latest">Latest</SelectItem>
+            <SelectItem value="old">Old</SelectItem>
           </SelectContent>
         </Select>
 
@@ -76,6 +77,15 @@ export default function FiltersBar({ onFilterChange }: any) {
         >
           Reset
         </Button>
+      </div>
+      {/* points  */}
+      <div className="ml-auto font-medium ">
+        <p className="flex items-center  gap-2">
+          Balance:
+          <span className=" flex items-center gap-1 text-yellow-500">
+            {user?.points} <Coins />
+          </span>
+        </p>
       </div>
     </div>
   );
