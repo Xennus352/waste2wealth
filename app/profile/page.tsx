@@ -14,7 +14,6 @@ import toast from "react-hot-toast";
 import PostCardContainer from "@/components/pages/PostCardContainer";
 import { LogoutButton } from "@/components/logout-button";
 import CreateProductForm from "@/components/pages/CreateProductForm";
-import OrderNotifications from "@/components/pages/OrderNotifications";
 import MyOrders from "@/components/pages/MyOrders";
 
 export default function Profile() {
