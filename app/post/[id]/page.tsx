@@ -1,4 +1,4 @@
-
+export const revalidate = 0;
 import PostClient from "./PostClient";
 import { createClient } from "@supabase/supabase-js";
 
