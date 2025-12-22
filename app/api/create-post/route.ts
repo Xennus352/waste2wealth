@@ -18,14 +18,16 @@ export async function POST(req: NextRequest) {
       for (const image of images) {
         const buffer = Buffer.from(image.fileData, "base64");
         const fileName = `${userId}-${Date.now()}-${image.fileName}`;
-        
+
         const { error: uploadError } = await supabase.storage
           .from("post-images")
           .upload(fileName, buffer, { upsert: true });
 
         if (uploadError) throw uploadError;
 
-        const { data } = supabase.storage.from("post-images").getPublicUrl(fileName);
+        const { data } = supabase.storage
+          .from("post-images")
+          .getPublicUrl(fileName);
         uploadedUrls.push(data.publicUrl);
       }
     }

@@ -9,14 +9,19 @@ export async function GET(req: NextRequest) {
       .select(
         `
         *,
-        profiles:profiles!inner(
-          id,
-          display_name,
-          avatar_url
-        ),
-        likes!left(id,user_id),
-        comments!left(id,user_id),
-        shares!left(id,user_id)
+        profiles:profiles!inner (
+      id,
+      display_name,
+      avatar_url
+    ),
+    likes:likes!left (
+      id,
+      user_id
+    ),
+    comments:comments!left (
+      id,
+      user_id
+    )
       `
       )
       .order("updated_at", { ascending: false });
