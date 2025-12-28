@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import { ThemeProvider } from "next-themes";
@@ -5,6 +6,8 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/pages/Navbar";
 import { Toaster } from "react-hot-toast";
+import Snowfall from "react-snowfall";
+import SnowEffect from "@/components/SnowEffect";
 
 const defaultUrl = process.env.NEXT_PUBLIC_BASE_URL
   ? `https://${process.env.NEXT_PUBLIC_BASE_URL}`
@@ -44,6 +47,7 @@ export default function RootLayout({
                 <Navbar />
               </nav>
               {children}
+              <SnowEffect />
               <Toaster position="top-right" />
             </div>
           </AuthProvider>
