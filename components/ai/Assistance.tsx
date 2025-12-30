@@ -185,9 +185,6 @@ export default function Assistance({ userId }: { userId: string }) {
                             <span className="text-[11px] text-green-600 font-extrabold">
                               {product.price} pts
                             </span>
-                            {/* <button className="bg-green-600 text-white text-[10px] px-3 py-1.5 rounded-lg hover:bg-green-700">
-                              Buy
-                            </button> */}
                           </div>
                         </div>
                       ))}
@@ -254,13 +251,15 @@ export default function Assistance({ userId }: { userId: string }) {
             onChange={(e) => setInput(e.target.value)}
             className="flex-1 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400"
           />
-          <button
+
+          {/* TODO: to upload images in future  */}
+          {/* <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className="bg-gray-300 px-4 py-3 rounded-xl hover:bg-gray-200 transition"
           >
             +
-          </button>
+          </button> */}
           <input
             type="file"
             accept="image/*"

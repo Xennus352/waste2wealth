@@ -16,8 +16,7 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
   const links = [
     { href: "/", label: "Home" },
     { href: "/market", label: "Market Place" },
-    { href: "/exchain-points", label: "Exchain Points" },
-    
+    { href: "/exchange-points", label: "Exchange Points" },
   ];
   return (
     <NavigationMenu {...props}>

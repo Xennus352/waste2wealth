@@ -2,18 +2,48 @@
 import { useAuth } from "@/context/AuthContext";
 import { Coins } from "lucide-react";
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { transferPoints } from "@/app/actions/transfer";
 
 export default function TransferPoints() {
+  const supabase = createClient();
   const [userId, setUserId] = useState("");
   const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const user = useAuth();
+
+  const handleTransfer = async () => {
+    setMessage("");
+    setLoading(true);
+
+    try {
+      const res = await transferPoints({
+        senderId: user?.id!,
+        receiverId: userId,
+        amount: Number(amount),
+      });
+
+      setMessage(res.message);
+      if (res.success) {
+        setUserId("");
+        setAmount("");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("⚠️ Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
       {/* Balance Card */}
-      <div className="bg-green-200  text-center py-8 rounded-xl shadow-lg text-2xl font-bold flex items-center justify-center gap-3 space-x-3">
+      <div className="bg-green-200 text-center py-8 rounded-xl shadow-lg text-2xl font-bold flex items-center justify-center gap-3">
         Total Balance
-        <span className="flex items-center justify-center gap-3 space-x-3 text-yellow-400">
+        <span className="flex items-center justify-center gap-2 text-yellow-400">
           {user?.points} <Coins />
         </span>
       </div>
@@ -22,7 +52,7 @@ export default function TransferPoints() {
       <div className="bg-white p-6 rounded-xl shadow-md space-y-4">
         <input
           type="text"
-          placeholder="Enter User ID (e.g., 12345)"
+          placeholder="Enter Receiver's User ID"
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -34,9 +64,21 @@ export default function TransferPoints() {
           onChange={(e) => setAmount(e.target.value)}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
         />
-        <button className="w-full py-3 bg-green-800 text-white font-bold rounded-lg hover:bg-green-700 transition">
-          Transfer
+        <button
+          onClick={handleTransfer}
+          disabled={loading}
+          className={`w-full py-3 bg-green-800 text-white font-bold rounded-lg hover:bg-green-700 transition ${
+            loading ? "opacity-60 cursor-not-allowed" : ""
+          }`}
+        >
+          {loading ? "Processing..." : "Transfer"}
         </button>
+
+        {message && (
+          <div className="mt-2 text-center text-sm font-semibold text-gray-800">
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );

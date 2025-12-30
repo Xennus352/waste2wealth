@@ -15,6 +15,7 @@ import PostCardContainer from "@/components/pages/PostCardContainer";
 import { LogoutButton } from "@/components/logout-button";
 import CreateProductForm from "@/components/pages/CreateProductForm";
 import MyOrders from "@/components/pages/MyOrders";
+import { IdCard } from "lucide-react";
 
 export default function Profile() {
   const [avatar, setAvatar] = useState<string>(
@@ -184,14 +185,14 @@ export default function Profile() {
                 {/* copyable user id  */}
                 <div className="flex items-center gap-2">
                   <p
-                    className="text-sm text-eco-primary select-text cursor-pointer
+                    className="text-sm flex items-center justify-center gap-2 text-eco-primary select-text cursor-pointer
                   hover:text-eco-primaryLight hover:underline transition"
                     onClick={() => {
                       if (user?.id) navigator.clipboard.writeText(user?.id);
                       toast.success("User ID copied to clipboard!");
                     }}
                   >
-                    {user?.id}
+                    <IdCard /> {user?.id}
                   </p>
                 </div>
               </div>

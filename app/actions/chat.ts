@@ -33,7 +33,7 @@ export async function chatAssistant(formData: FormData, chatHistory: any[]) {
 
   let aiResponse = "";
 
-  // FIX: Wrap the API call to prevent 500 Server Crashes
+  //Wrap the API call to prevent 500 Server Crashes
   try {
     const response = await openai.chat.completions.create({
       model: "mistralai/mistral-7b-instruct:free", //"meta-llama/llama-3.2-11b-vision-instruct:free", // "google/learnlm-1.5-pro-experimental:free", //"google/gemini-2.0-flash-exp:free",
@@ -74,27 +74,38 @@ export async function chatAssistant(formData: FormData, chatHistory: any[]) {
   // CREATE POST
   // =========================
   if (parsed.action === "create_post" && imageBase64) {
-    const buffer = Buffer.from(imageBase64.split(",")[1], "base64");
-    const filePath = `posts/${userId}_${Date.now()}.png`;
+    // const buffer = Buffer.from(imageBase64.split(",")[1], "base64");
+    // const filePath = `posts/${userId}_${Date.now()}.png`;
+    // const { data: upload, error: uploadError } = await supabase.storage
+    //   .from("post-images")
+    //   .upload(filePath, buffer, { contentType: "image/png" });
+    // if (uploadError) throw uploadError;
+    // const imageUrl = supabase.storage
+    //   .from("post-images")
+    //   .getPublicUrl(upload.path).data.publicUrl;
+    // await supabase.from("posts").insert({
+    //   user_id: userId,
+    //   description: parsed.data?.description || "",
+    //   tags: parsed.data?.tags || [],
+    //   image_url: imageUrl,
+    // });
+    // return { text: "✅ Your eco post has been published successfully!" };
 
-    const { data: upload, error: uploadError } = await supabase.storage
-      .from("post-images")
-      .upload(filePath, buffer, { contentType: "image/png" });
+    return {
+      text: `
+      ✨ Create a Post — Premium Experience
 
-    if (uploadError) throw uploadError;
+🏠 Go to the **Homepage**  
+⬆️ At the top, open the **Post Section**
 
-    const imageUrl = supabase.storage
-      .from("post-images")
-      .getPublicUrl(upload.path).data.publicUrl;
+📸 Upload your photo  
+✍️ Add a short description  
+🚀 Share instantly with the community  
 
-    await supabase.from("posts").insert({
-      user_id: userId,
-      description: parsed.data?.description || "",
-      tags: parsed.data?.tags || [],
-      image_url: imageUrl,
-    });
-
-    return { text: "✅ Your eco post has been published successfully!" };
+🌿 Designed for a smooth and elegant posting experience  
+Enjoy creating and sharing beautiful moments
+ `,
+    };
   }
 
   // =========================
@@ -116,36 +127,54 @@ export async function chatAssistant(formData: FormData, chatHistory: any[]) {
   // BUY POINTS
   // =========================
   if (parsed.action === "buy_points") {
-    const declaredAmount = Number(parsed.amount);
-    if (!declaredAmount || declaredAmount <= 0)
-      return { text: "❌ Invalid amount." };
-    if (!imageBase64)
-      return { text: "❌ Please provide a payment screenshot." };
+    // const declaredAmount = Number(parsed.amount);
+    // if (!declaredAmount || declaredAmount <= 0)
+    //   return {
+    //     text: "💳 Please enter the amount and upload the payment screenshot.",
+    //   };
+    // if (!imageBase64)
+    //   return { text: "❌ Please provide a payment screenshot." };
+    // const verifiedAmount = Number(parsed.verifiedAmount || 0);
+    // if (verifiedAmount !== declaredAmount) {
+    //   return { text: "❌ Screenshot amount mismatch!" };
+    // }
+    // const { data: profile } = await supabase
+    //   .from("profiles")
+    //   .select("points")
+    //   .eq("id", userId)
+    //   .single();
+    // await supabase
+    //   .from("profiles")
+    //   .update({ points: (profile?.points || 0) + declaredAmount })
+    //   .eq("id", userId);
+    // await supabase.from("transactions").insert({
+    //   user_id: userId,
+    //   type: "add",
+    //   amount: declaredAmount,
+    //   status: "approved",
+    // });
+    // return { text: `✅ Payment approved! ${declaredAmount} points added.` };
+    return {
+      text: `💳 Buy Points – Admin Information
 
-    const verifiedAmount = Number(parsed.verifiedAmount || 0);
-    if (verifiedAmount !== declaredAmount) {
-      return { text: "❌ Screenshot amount mismatch!" };
-    }
+Please contact one of our admins to complete your payment:
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("points")
-      .eq("id", userId)
-      .single();
+👤 Soe Moe Kyaw  
+📧 capeloise324@gmail.com  
+📞 09672712095  
 
-    await supabase
-      .from("profiles")
-      .update({ points: (profile?.points || 0) + declaredAmount })
-      .eq("id", userId);
+👤 May Myat Thu  
+📧 maymyatt385@gmail.com  
+📞 09963088539  
 
-    await supabase.from("transactions").insert({
-      user_id: userId,
-      type: "add",
-      amount: declaredAmount,
-      status: "approved",
-    });
+After payment:
+• Enter the amount you paid  
+• Upload the payment screenshot  
 
-    return { text: `✅ Payment approved! ${declaredAmount} points added.` };
+✅ Your points will be added after verification  
+Thank you for choosing us 💚
+`,
+    };
   }
 
   return {
