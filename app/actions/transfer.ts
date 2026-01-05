@@ -7,89 +7,60 @@ interface TransferPayload {
   amount: number;
 }
 
-export async function transferPoints({
-  senderId,
-  receiverId,
-  amount,
-}: TransferPayload) {
-  if (!receiverId || !amount || amount <= 0) {
-    return { success: false, message: "❌ Invalid receiver or amount." };
-  }
-
-  //  Get sender balance
-  const { data: sender, error: senderError } = await supabaseAdmin
-    .from("profiles")
-    .select("points")
-    .eq("id", senderId)
-    .single();
-
-  if (senderError || !sender) {
-    return { success: false, message: "❌ Sender not found." };
-  }
-
-  if (sender.points < amount) {
-    return { success: false, message: "⚠️ Insufficient balance." };
-  }
-
-  //  Get receiver balance
-  const { data: receiver, error: receiverError } = await supabaseAdmin
-    .from("profiles")
-    .select("points")
-    .eq("id", receiverId)
-    .single();
-
-  if (receiverError || !receiver) {
-    return { success: false, message: "❌ Receiver not found." };
+export async function transferPoints({ senderId, receiverId, amount }: TransferPayload) {
+  if (!receiverId || amount <= 0 || senderId === receiverId) {
+    return { success: false, message: "❌ Invalid input." };
   }
 
   try {
-    //  Deduct sender points
-    const { error: deductError } = await supabaseAdmin
-      .from("profiles")
-      .update({ points: sender.points - amount })
-      .eq("id", senderId);
+    //Get current balances
+    const { data: sender } = await supabaseAdmin.from("profiles").select("points").eq("id", senderId).single();
+    const { data: receiver } = await supabaseAdmin.from("profiles").select("points").eq("id", receiverId).single();
 
-    if (deductError) throw deductError;
+    if (!sender || !receiver) throw new Error("User accounts not found.");
+    if (sender.points < amount) throw new Error("Insufficient balance.");
 
-    //  Add receiver points
-    const { error: addError } = await supabaseAdmin
-      .from("profiles")
-      .update({ points: receiver.points + amount })
-      .eq("id", receiverId);
+    // Perform updates
+    await supabaseAdmin.from("profiles").update({ points: sender.points - amount }).eq("id", senderId);
+    await supabaseAdmin.from("profiles").update({ points: receiver.points + amount }).eq("id", receiverId);
 
-    if (addError) {
-      // Rollback sender
-      await supabaseAdmin
-        .from("profiles")
-        .update({ points: sender.points })
-        .eq("id", senderId);
-      throw addError;
-    }
-
-    //  Insert into transactions table
-    await supabaseAdmin.from("transactions").insert([
+    // THE TRANSACTION INSERT (The part that is failing)
+    const transactionData = [
       {
         user_id: senderId,
         type: "transfer",
-        amount,
+        amount: amount,
         status: "success",
-        created_at: new Date().toISOString(),
+        created_at: new Date().toISOString()
       },
       {
         user_id: receiverId,
         type: "receive",
-        amount,
+        amount: amount,
         status: "success",
-        created_at: new Date().toISOString(),
-      },
-    ]);
+        created_at: new Date().toISOString()
+      }
+    ];
 
-    return {
-      success: true,
-      message: `✅ Successfully sent ${amount} points to ${receiverId}.`,
-    };
-  } catch (err) {
-    console.error("Transfer failed:", err);
-    return { success: false, message: "⚠️ Failed to transfer points." };
+    const { error: transError } = await supabaseAdmin
+      .from("transactions")
+      .insert(transactionData);
+
+    if (transError) {
+      //  PRINT THE EXACT REASON IN  TERMINAL
+      // console.error("CRITICAL DATABASE ERROR:", {
+      //   message: transError.message,
+      //   details: transError.details,
+      //   hint: transError.hint,
+      //   code: transError.code
+      // });
+      throw new Error(`Table Insert Failed: ${transError.message}`);
+    }
+
+    return { success: true, message: "Transfer complete." };
+
+  } catch (err: any) {
+    console.error("Transfer failed:", err.message);
+    return { success: false, message: err.message };
   }
 }

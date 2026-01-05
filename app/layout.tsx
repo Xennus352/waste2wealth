@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
+      <body suppressHydrationWarning={true}
         className={`${roboto.className} antialiased bg-eco-background text-eco-primary text-lg`}
       >
         <ThemeProvider

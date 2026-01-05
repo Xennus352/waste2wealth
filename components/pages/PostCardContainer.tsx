@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Triangle } from "react-loader-spinner";
 import PostCard from "./PostCard";
 import { motion, AnimatePresence } from "framer-motion";
+import Loading from "./Loading";
 type PostCardContainerProps = {
   currentUserPost?: string;
   refreshFeed?: boolean;
@@ -34,18 +35,9 @@ const PostCardContainer = ({
     fetchPosts();
   }, [refreshFeed]);
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Triangle
-          visible={true}
-          height="90"
-          width="90"
-          color="#4fa94d"
-          ariaLabel="triangle-loading"
-        />
-      </div>
-    );
+  if (loading) {
+    <Loading/>
+  }
 
   if (error) return <p>Error: {error}</p>;
 
