@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getTransactionHistory } from "@/app/actions/getTransactionHistory";
 import { useAuth } from "@/context/AuthContext";
 import Loading from "./Loading";
+import TransitionHistoryCard from "./TransitionHistoryCard";
 
 
 interface Transaction {
@@ -44,30 +45,9 @@ export default function TransitionHistory() {
         <div className="text-center p-4 text-gray-500">No transactions found.</div>
       ) : (
         transactions.map((item) => (
-          <div
-            key={item.id}
-            className="flex justify-between items-center bg-white p-4 rounded-xl shadow-md"
-          >
-            <div>
-              <div className="text-gray-600 text-sm">
-                {new Date(item.created_at).toLocaleDateString()}
-              </div>
-              <div className="font-semibold text-lg capitalize">
-                {item.type === "transfer" ? "Points Sent" : "Points Received"}
-              </div>
-              <div className="text-gray-400 text-xs italic">
-                Status: {item.status}
-              </div>
-            </div>
 
-            <div
-              className={`font-bold text-xl ${
-                item.type === "receive" ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {item.type === "receive" ? "+" : "-"}{item.amount} pts
-            </div>
-          </div>
+          <TransitionHistoryCard item={item} key={item.id}/>
+        
         ))
       )}
     </div>
