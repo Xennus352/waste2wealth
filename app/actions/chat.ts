@@ -36,7 +36,8 @@ export async function chatAssistant(formData: FormData, chatHistory: any[]) {
   //Wrap the API call to prevent 500 Server Crashes
   try {
     const response = await openai.chat.completions.create({
-      model: "mistralai/mistral-7b-instruct:free", //"meta-llama/llama-3.2-11b-vision-instruct:free", // "google/learnlm-1.5-pro-experimental:free", //"google/gemini-2.0-flash-exp:free",
+      model: //"mistralai/mistral-7b-instruct:free", 
+      "meta-llama/llama-3.2-11b-vision-instruct:free", // "google/learnlm-1.5-pro-experimental:free", //"google/gemini-2.0-flash-exp:free",
       messages: [
         {
           role: "system",
