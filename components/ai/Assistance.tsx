@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { createClient } from "@/lib/supabase/client";
+import Linkify from "linkify-react";
 
 type Message = {
   id: number;
@@ -25,18 +26,17 @@ type Message = {
 };
 declare global {
   interface Window {
-    puter?: any; 
+    puter?: any;
   }
 }
-
 
 export default function Assistance({ userId }: { userId: string }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: Date.now(),
-      text: "Hello! I am Reco. Ready to turn waste into wealth today? 🌿✨",
+      text: "Hello! I am W2W AI. Ready to turn waste into wealth today? 🌿✨",
       sender: "ai",
-      model: "Reco AI",
+      model: "W2W AI",
     },
   ]);
   const [input, setInput] = useState("");
@@ -53,8 +53,8 @@ export default function Assistance({ userId }: { userId: string }) {
   // -----------------------------
   // SYSTEM PROMPT: Kid-friendly, step-based, eco-conscious
   // -----------------------------
-  const RECO_SYSTEM_PROMPT = `
-You are Reco 🤖♻️ — a friendly recycling robot for the "Waste to Wealth" app.
+  const W2W_SYSTEM_PROMPT = `
+You are W2W AI 🤖♻️ — a friendly recycling robot for the "Waste to Wealth" app.
 
 Your job is to explain recycling, upcycling, and eco-craft ideas in a way that:
 - Kids (7–12 years old) can understand
@@ -130,6 +130,28 @@ If user asks about products:
 - Show short product list
 - Say: "You can find these in the Homepage 🛍️"
 
+
+━━━━━━━━━━━━━━━━━━
+🖼️ IMAGE → VIDEO MATCH RULE
+━━━━━━━━━━━━━━━━━━
+When an image is provided and the user asks how to make it:
+
+You MUST:
+1. Say what item you see in the image
+2. Use that SAME item name for the YouTube search links
+3. Links must clearly teach how to make THAT item
+4. If unsure, choose the closest common DIY name
+
+━━━━━━━━━━━━━━━━━━
+⚠️ IMAGE UNCERTAINTY RULE
+━━━━━━━━━━━━━━━━━━
+If the image item is not 100% clear:
+- DO NOT confidently name it as soap, food, or drink
+- Say it "looks like" or "appears to be"
+- Choose the closest safe DIY category
+- Generate YouTube links using that cautious name
+
+
 ━━━━━━━━━━━━━━━━━━
 🚫 LIMITS
 ━━━━━━━━━━━━━━━━━━
@@ -179,67 +201,103 @@ If user asks about products:
   // -----------------------------
   // Send message
   // -----------------------------
-const sendMessage = async (text: string) => {
-  if (!text.trim() && !pendingImage) return;
+  const sendMessage = async (text: string) => {
+    if (!text.trim() && !pendingImage) return;
 
-  const lowerText = text.toLowerCase();
+    const lowerText = text.toLowerCase();
 
-  // Detect if user asks about buying points
-  const isAskingForPoints =
-    lowerText.includes("buy points") ||
-    lowerText.includes("purchase points") ||
-    lowerText.includes("top up");
+    const isHowToRequest =
+      pendingImage &&
+      (lowerText.includes("how to make") ||
+        lowerText.includes("how to create") ||
+        lowerText.includes("how to reuse") ||
+        lowerText.includes("make this"));
 
-  // Detect if user asks about products/items availability
-  const isAskingForProducts =
-    !isAskingForPoints &&
-    (lowerText.includes("available") ||
-      lowerText.includes("buy") ||
-      lowerText.includes("product") ||
-      lowerText.includes("item"));
+    // Detect if user asks about buying points
+    const isAskingForPoints =
+      lowerText.includes("buy points") ||
+      lowerText.includes("purchase points") ||
+      lowerText.includes("top up");
 
-  const currentInput = text || "Analyze this image.";
-  const imageToSend = pendingImage;
+    // Detect if user asks about products/items availability
+    const isAskingForProducts =
+      !isAskingForPoints &&
+      (lowerText.includes("available") ||
+        lowerText.includes("buy") ||
+        lowerText.includes("product") ||
+        lowerText.includes("item"));
 
-  setMessages((prev) => [
-    ...prev,
-    {
-      id: Date.now(),
-      text: text.trim() || undefined,
-      image: imageToSend || undefined,
-      sender: "user",
-    },
-  ]);
+    const currentInput = text || "Analyze this image.";
+    const imageToSend = pendingImage;
 
-  setInput("");
-  setPendingImage(null);
-  setIsTyping(true);
+    // Detect Burmese input
+    const isBurmese = /[\u1000-\u109F]/.test(currentInput);
+    const languageInstruction = isBurmese
+      ? "Please respond in Burmese (မြန်မာ). Use simple words for kids."
+      : "Please respond in English.";
 
-  const fetchAIResponse = async () => {
-    let dbContext = "";
-    let fetchedProducts: any[] = [];
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        text: text.trim() || undefined,
+        image: imageToSend || undefined,
+        sender: "user",
+      },
+    ]);
 
-    // Only fetch products if user asks about products (not points)
-    if (isAskingForProducts) {
-      try {
-        const { data: products } = await supabase
-          .from("products")
-          .select("*")
-          .order("created_at", { ascending: false });
+    setInput("");
+    setPendingImage(null);
+    setIsTyping(true);
 
-        if (products && products.length > 0) {
-          fetchedProducts = products;
-          dbContext = "\n\nDATABASE_INFO: Displaying retrieved products.";
-        }
-      } catch (err) {
-        console.error(err);
-      }
+    let howToInstruction = "";
+
+    if (isHowToRequest) {
+      howToInstruction = `
+🖼️ IMAGE ANALYSIS (MANDATORY):
+- Identify the MAIN item in the image
+- Name it clearly (example: "handmade soap", "plastic bottle planter")
+- Use this SAME name for YouTube search links
+
+🎥 YOUTUBE RULE (STRICT):
+- Add section title exactly: "🎥 Watch on YouTube:"
+- ONLY clickable YouTube URLs
+- NO titles
+- NO extra text
+- Links MUST be based on the identified image item
+- 1–2 links only
+
+Correct format:
+🎥 Watch on YouTube:
+🔗 https://www.youtube.com/results?search_query=handmade+soap+DIY
+`;
     }
 
-    // If user asks about points, append the admin instructions
-    let pointsInstructions = "";
-    if (isAskingForPoints) {
-      pointsInstructions = `
+    const fetchAIResponse = async () => {
+      let dbContext = "";
+      let fetchedProducts: any[] = [];
+
+      // Only fetch products if user asks about products (not points)
+      if (isAskingForProducts) {
+        try {
+          const { data: products } = await supabase
+            .from("products")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+          if (products && products.length > 0) {
+            fetchedProducts = products;
+            dbContext = "\n\nDATABASE_INFO: Displaying retrieved products.";
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      // If user asks about points, append the admin instructions
+      let pointsInstructions = "";
+      if (isAskingForPoints) {
+        pointsInstructions = `
 💳 Buy Points – Admin Information
 
 Please contact one of our admins to complete your payment:
@@ -267,65 +325,70 @@ After payment:
 ✅ Your points will be added after verification  
 Thank you for choosing us 💚
 `;
-    }
-
-    const models = ["gemini-2.5-flash", "claude-sonnet-4.5", "gpt-5-nano"];
-    for (const modelName of models) {
-      try {
-        setActiveModel(modelName.toUpperCase());
-        const response = await window.puter.ai.chat(
-          `${RECO_SYSTEM_PROMPT}${dbContext}${pointsInstructions}\n\nUser: ${currentInput}`,
-          imageToSend || undefined,
-          { model: modelName, stream: true },
-        );
-
-        let fullContent = "";
-        for await (const part of response) {
-          if (part?.text) fullContent += part.text;
-        }
-
-        if (fullContent)
-          return {
-            text: fullContent,
-            model: modelName,
-            products: fetchedProducts, // Only populated if products were requested
-          };
-      } catch (err) {
-        continue;
       }
+
+      const models = ["gemini-2.5-flash", "claude-sonnet-4.5", "gpt-5-nano"];
+      for (const modelName of models) {
+        try {
+          setActiveModel(modelName.toUpperCase());
+          const response = await window.puter.ai.chat(
+            `${W2W_SYSTEM_PROMPT}
+${dbContext}
+${pointsInstructions}
+${howToInstruction}
+
+User: ${currentInput}
+${languageInstruction}`,
+            imageToSend || undefined,
+            { model: modelName, stream: true },
+          );
+
+          let fullContent = "";
+          for await (const part of response) {
+            if (part?.text) fullContent += part.text;
+          }
+
+          if (fullContent)
+            return {
+              text: fullContent,
+              model: modelName,
+              products: fetchedProducts, // Only populated if products were requested
+            };
+        } catch (err) {
+          continue;
+        }
+      }
+
+      throw new Error("Failed to fetch");
+    };
+
+    try {
+      const result = await fetchAIResponse();
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "ai",
+          text: result.text,
+          model: `W2W AI (${result.model.split("-")[0].toUpperCase()})`,
+          products: result.products,
+        },
+      ]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "ai",
+          text: "Connection issue. Try again! 🌿",
+          model: "System Error",
+        },
+      ]);
+    } finally {
+      setIsTyping(false);
+      setActiveModel(null);
     }
-
-    throw new Error("Failed to fetch");
   };
-
-  try {
-    const result = await fetchAIResponse();
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        sender: "ai",
-        text: result.text,
-        model: `Reco (${result.model.split("-")[0].toUpperCase()})`,
-        products: result.products,
-      },
-    ]);
-  } catch (err) {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        sender: "ai",
-        text: "Connection issue. Try again! 🌿",
-        model: "System Error",
-      },
-    ]);
-  } finally {
-    setIsTyping(false);
-    setActiveModel(null);
-  }
-};
-
 
   return (
     <div className="flex flex-col h-[750px] bg-[#FBFCFD] rounded-[2.5rem] border border-zinc-200 shadow-2xl overflow-hidden font-sans">
@@ -341,7 +404,7 @@ Thank you for choosing us 💚
           </div>
           <div>
             <h1 className="text-sm font-black uppercase tracking-wider">
-              Reco AI
+              W2W AI
             </h1>
             <p className="text-[9px] opacity-70 font-bold uppercase tracking-widest">
               {activeModel ? `Syncing ${activeModel}` : "Waste to Wealth"}
@@ -398,8 +461,16 @@ Thank you for choosing us 💚
                     />
                   )}
 
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap font-medium prose prose-zinc prose-sm max-w-none prose-table:border prose-table:rounded-xl">
-                    {msg.text}
+                  <div className="text-sm leading-relaxed whitespace-pre-wrap font-medium prose prose-zinc prose-sm max-w-none">
+                    <Linkify
+                      options={{
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                        className: "text-green-600 underline font-semibold",
+                      }}
+                    >
+                      {msg.text}
+                    </Linkify>
                   </div>
 
                   {msg.products && msg.products.length > 0 && (
@@ -451,7 +522,7 @@ Thank you for choosing us 💚
                     )}`}
                   />
                   <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
-                    Reco is thinking...
+                    W2W AI is thinking...
                   </span>
                 </div>
                 <div className="space-y-2">
@@ -509,7 +580,7 @@ Thank you for choosing us 💚
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Reco how to reuse waste ♻️ (or upload a photo)"
+            placeholder="Ask W2W AI how to reuse waste ♻️ (or upload a photo)"
             className="w-full min-h-[60px] p-3 bg-transparent resize-none outline-none text-sm font-medium"
           />
           <div className="flex justify-between items-center px-2 py-1">

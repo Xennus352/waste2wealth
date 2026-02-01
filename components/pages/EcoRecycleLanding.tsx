@@ -33,7 +33,7 @@ export default function EcoRecycleLanding() {
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-6xl font-bold mb-6"
           >
-            Turn Waste Into <span className="text-[#2E7D32]">Wealth</span>
+            အမှိုက်မှ တန်ဖိုးရှိသော အရာများကို ဖန်တီးလိုက်ပါ
           </motion.h1>
 
           <motion.p
@@ -42,10 +42,12 @@ export default function EcoRecycleLanding() {
             transition={{ delay: 0.4 }}
             className="text-lg md:text-xl max-w-3xl mx-auto mb-10 text-[#2E7D32]"
           >
-            Waste to wealth is an advanced recycle marketplace where you can{" "}
-            <b>sell</b>, <b>buy</b>, and <b>post</b> recycled products. From
-            plastic and metal to handmade eco-items — everything finds a new
-            life.
+            Waste to Wealth သည် အဆင့်မြင့် ပြန်လည်အသုံးပြု (Recycle) ပစ္စည်းများ
+            အရောင်းအဝယ်ပြုလုပ်ရာ နေရာတစ်ခုဖြစ်ပြီး၊ သင် ပြန်လည်ဆန်းသစ်ထားသော
+            ထုတ်ကုန်များကို ရောင်းချခြင်း၊ ဝယ်ယူခြင်းနှင့် ကြော်ငြာတင်ခြင်းများ
+            ပြုလုပ်နိုင်ပါသည်။ ပလတ်စတစ်နှင့် သတ္တုပစ္စည်းများသာမက
+            လက်မှုအနုပညာသုံး ဂေဟစနစ်သဟဇာတဖြစ်သော ပစ္စည်းများအထိ—အရာအားလုံးကို
+            အသုံးဝင်သော အသွင်သစ်တစ်ခုအဖြစ် ပြန်လည်အသက်သွင်းနိုင်ပါသည်။
           </motion.p>
 
           <motion.div
@@ -137,12 +139,19 @@ export default function EcoRecycleLanding() {
               Every Post Makes an Impact 🌍
             </h2>
             <p className="text-lg text-[#2E7D32] mb-6">
-              When you sell or buy recycled products, you reduce landfill waste,
-              save energy, and support a circular economy.
+              ပြန်လည်အသုံးပြုထားသော ထုတ်ကုန်များကို သင် ဝယ်ယူခြင်း သိုမဟုတ်
+              ရောင်းချခြင်းဖြင့်
+              <b> စွန့်ပစ်ပစ္စည်းပမာဏကို လျှော့ချနိုင်ခြင်း</b>၊{" "}
+              <b> စွမ်းအင်ချွေတာနိုင်ခြင်း</b> နှင့် သယံဇာတများကို အကျိုးရှိရှိ
+              အလှည့်ကျအသုံးပြုနိုင်သောစနစ် (Circular Economy) ကို အထောက်အပံ့
+              ဖြစ်စေပါသည်။
             </p>
             <p className="text-[#2E7D32]">
-              Waste to wealth empowers individuals and small businesses to turn
-              waste into value — creating income while protecting the planet.
+              Waste to Wealth သည် လူပုဂ္ဂိုလ်တစ်ဦးချင်းစီနှင့်
+              အသေးစားလုပ်ငန်းရှင်များအား အမှိုက်မှ တန်ဖိုးရှိသော အရာများအဖြစ်
+              ပြောင်းလဲနိုင်ရန် ခွန်အားပေးလျက်ရှိပါသည် — ဤသို့ဖြင့် ကမ္ဘာမြေကို
+              ကာကွယ်စောင့်ရှောက်ရင်း တစ်ဖက်မှလည်း မိသားစုဝင်ငွေကို
+              ရှာဖွေနိုင်မည်ဖြစ်ပါသည်။
             </p>
           </div>
 
@@ -167,11 +176,14 @@ export default function EcoRecycleLanding() {
           className="max-w-7xl mx-auto px-6 py-24 text-center"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Post Today. Sell Tomorrow.
+            ယနေ့ ပိုစ်တင်ပါ၊ မနက်ဖြန် ရောင်းချလိုက်ပါ။
           </h2>
           <p className="max-w-2xl mx-auto mb-10 text-[#FAFAFA]/90">
-            Join thousands of users buying and selling recycled products. Build
-            income, reduce waste, and be part of the eco revolution.
+            ပြန်လည်အသုံးပြုထားသော ထုတ်ကုန်များကို ဝယ်ယူရောင်းချနေသည့်
+            ထောင်ပေါင်းများစွာသော အသုံးပြုသူများနှင့် ပူးပေါင်းလိုက်ပါ။
+            မိသားစုဝင်ငွေကို တိုးမြှင့်ပါ၊ စွန့်ပစ်ပစ္စည်းများကို လျှော့ချပါ၊
+            ထိုပြင် ဂေဟစနစ် တော်လှန်ရေး (Eco Revolution) ၏
+            အစိတ်အပိုင်းတစ်ခုအဖြစ် ပါဝင်လိုက်ပါ
           </p>
           <button
             className="px-10 py-4 rounded-2xl bg-[#FFC107] text-[#1B5E20] font-semibold shadow-lg hover:scale-110 transition"
