@@ -177,17 +177,25 @@ If the image item is not 100% clear:
   // -----------------------------
   useEffect(() => {
     if (typeof window === "undefined") return;
+
     if (window.puter) {
       setPuterLoaded(true);
       return;
     }
-    if (document.querySelector("script[data-puter]")) return;
 
     const script = document.createElement("script");
     script.src = "https://js.puter.com/v2/";
     script.async = true;
-    script.dataset.puter = "true";
-    script.onload = () => setPuterLoaded(true);
+
+    // force anonymous usage
+    script.onload = () => {
+      window.puter?.init?.({
+        auth: false, // disable auth
+        guest: true, // force guest mode
+      });
+      setPuterLoaded(true);
+    };
+
     document.body.appendChild(script);
   }, []);
 
@@ -461,12 +469,12 @@ ${languageInstruction}`,
                     />
                   )}
 
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap font-medium prose prose-zinc prose-sm max-w-none">
+                  <div className="text-3xl leading-relaxed whitespace-pre-wrap font-medium prose prose-zinc prose-sm max-w-none">
                     <Linkify
                       options={{
                         target: "_blank",
                         rel: "noopener noreferrer",
-                        className: "text-green-600 underline font-semibold",
+                        className: "text-green-600 underline  font-semibold",
                       }}
                     >
                       {msg.text}
