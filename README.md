@@ -7,106 +7,203 @@
  The fastest way to build apps with Next.js and Supabase
 </p>
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+ 
+````md
+# ♻️ Waste2Wealth
 
-## Features
+Transforming waste into opportunity through technology.
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Proxy
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+Waste2Wealth is a smart sustainability platform designed to help individuals, communities, and organizations manage waste more efficiently while promoting recycling, environmental awareness, and circular economy practices.
 
-## Demo
+---
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+# 🚀 Features
 
-## Deploy to Vercel
+- ♻️ Smart waste tracking system
+- 📦 Waste categorization & management
+- 🌍 Eco-friendly sustainability dashboard
+- 📊 Analytics & environmental insights
+- 👤 User authentication & role management
+- 🧠 AI-powered waste classification support
+- 📱 Responsive modern UI
+- ☁️ Cloud-ready architecture
 
-Vercel deployment will guide you through creating a Supabase account and project.
+---
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+# 🛠️ Tech Stack
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+## Frontend
+- React / Next.js
+- Tailwind CSS
+- Framer Motion
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+## Backend
+- Node.js
+- Express.js
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+## Database
+- PostgreSQL / Supabase
 
-## Clone and run locally
+## AI & Utilities
+- Python
+- TensorFlow / OpenCV (optional AI modules)
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+---
 
-2. Create a Next.js app using the Supabase Starter template npx command
+# 📂 Project Structure
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+```bash
+waste2wealth/
+│
+├── frontend/        # Frontend application
+├── backend/         # Backend APIs
+├── ai-models/       # AI waste classification models
+├── public/          # Static assets
+├── docs/            # Documentation
+└── README.md
+````
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+---
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+# ⚡ Getting Started
 
-3. Use `cd` to change into the app's directory
+## 1. Clone the Repository
 
-   ```bash
-   cd with-supabase-app
-   ```
-
-4. Rename `.env.example` to `.env.local` and update the following:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
+```bash
+git clone https://github.com/Xennus352/waste2wealth.git
+cd waste2wealth
 ```
 
-> [!NOTE]
-> This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-> Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-> See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+---
 
-Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+## 2. Install Dependencies
 
-5. You can now run the Next.js local development server:
+### Frontend
 
-   ```bash
-   npm run dev
-   ```
+```bash
+cd frontend
+npm install
+```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+### Backend
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+```bash
+cd backend
+npm install
+```
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+---
 
-## Feedback and issues
+## 3. Setup Environment Variables
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+Create a `.env` file inside the backend folder.
 
-## More Supabase examples
+```env
+PORT=5000
+DATABASE_URL=your_database_url
+JWT_SECRET=your_secret_key
+```
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+---
 
+## 4. Run Development Server
 
+### Frontend
+
+```bash
+npm run dev
+```
+
+### Backend
+
+```bash
+npm run start
+```
+
+---
+
+# 🧠 AI Waste Classification (Optional)
+
+The AI module can classify waste into categories such as:
+
+* Plastic
+* Paper
+* Glass
+* Metal
+* Organic Waste
+* E-Waste
+
+Example future integrations:
+
+* Real-time camera detection
+* Smart recycling assistant
+* IoT waste-bin integration
+
+---
+
+# 🌱 Vision
+
+Waste2Wealth aims to encourage sustainable living by making waste management smarter, more accessible, and rewarding.
+
+Our goal is to bridge technology and environmental responsibility to create cleaner and greener communities.
+
+---
+
+# 📸 Future Roadmap
+
+* 🔥 Gamified recycling rewards
+* 📍 Smart bin location tracking
+* 🤖 AI recycling assistant
+* 📱 Mobile application
+* 🌐 Multi-language support
+* 📊 Carbon footprint analytics
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the project
+2. Create your feature branch
+
+```bash
+git checkout -b feature/amazing-feature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add amazing feature"
+```
+
+4. Push to the branch
+
+```bash
+git push origin feature/amazing-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 💚 Support
+
+If you like this project, give it a ⭐ on GitHub and support sustainable innovation.
+
+---
+
+# 👨‍💻 Author
+
+Developed by Xennus352
+
+Building technology for a cleaner future.
+
+```
+```
